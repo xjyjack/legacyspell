@@ -1,0 +1,25 @@
+repositories {
+    maven {
+        name "Curse Maven"
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        name 'Modrinth'
+        url 'https://api.modrinth.com/maven'
+        content {
+            includeGroup 'maven.modrinth'
+        }
+    }
+    mavenLocal()
+}
+
+dependencies {
+    // Electroblob's Wizardry - the API this addon is built against.
+    // CurseMaven coordinate format: curse.maven:<descriptor>-<projectid>:<fileid>
+    // fg.deobf() rewrites the SRG names inside the published jar into the MCP names
+    // used by this workspace, so we can compile against them directly.
+    implementation fg.deobf("curse.maven:ElectroblobsWizardry-${wizardry_projectid}:${wizardry_fileid}")
+}

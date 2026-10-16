@@ -1,0 +1,74 @@
+{
+    "spell.wind_blade": {
+        "category": "spells",
+        "sounds": [
+            "legacyspell:wind_blade/wind_burst1",
+            "legacyspell:wind_blade/wind_burst2",
+            "legacyspell:wind_blade/wind_burst3"
+        ]
+    },
+    "spell.iron_slash": {
+        "category": "spells",
+        "sounds": [
+            "legacyspell:wind_blade/wind_burst1",
+            "legacyspell:wind_blade/wind_burst2",
+            "legacyspell:wind_blade/wind_burst3"
+        ]
+    },
+    "spell.aeropic": {
+        "category": "spells",
+        "sounds": [
+            "legacyspell:wind_blade/wind_burst1",
+            "legacyspell:wind_blade/wind_burst2",
+            "legacyspell:wind_blade/wind_burst3"
+        ]
+    },
+    "spell.sky_cleave": {
+        "category": "spells",
+        "sounds": [
+            "legacyspell:wind_blade/wind_burst1",
+            "legacyspell:wind_blade/wind_burst2",
+            "legacyspell:wind_blade/wind_burst3"
+        ]
+    },
+    "spell.efface": {
+        "category": "spells",
+        "sounds": [
+            "legacyspell:wind_blade/wind_burst1",
+            "legacyspell:wind_blade/wind_burst2",
+            "legacyspell:wind_blade/wind_burst3"
+        ]
+    },
+    "spell.rebirth": {
+        "category": "spells",
+        "sounds": [
+            "legacyspell:wind_blade/wind_burst1",
+            "legacyspell:wind_blade/wind_burst2",
+            "legacyspell:wind_blade/wind_burst3"
+        ]
+    },
+    "spell.sword_dance": {
+        "category": "spells",
+        "sounds": [
+            "legacyspell:wind_blade/wind_burst1",
+            "legacyspell:wind_blade/wind_burst2",
+            "legacyspell:wind_blade/wind_burst3"
+        ]
+    },
+    "spell.dragon_glide": {
+        "category": "spells",
+        "sounds": [
+            "legacyspell:wind_blade/wind_burst1",
+            "legacyspell:wind_blade/wind_burst2",
+            "legacyspell:wind_blade/wind_burst3"
+        ]
+    },
+    "spell.ender_shackle": {
+        "category": "spells",
+        "sounds": [
+            "legacyspell:wind_blade/wind_burst1",
+            "legacyspell:wind_blade/wind_burst2",
+            "legacyspell:wind_blade/wind_burst3"
+        ]
+    }
+}

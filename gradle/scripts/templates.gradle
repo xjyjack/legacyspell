@@ -1,0 +1,52 @@
+tasks.register('copyResources', Copy) {
+    group 'templates tasks'
+    inputs.files sourceSets.main.resources.srcDirs, 'gradle.properties'
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.bak', '**/*.psd', 'mcmod.info'
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand(
+                mod_id : mod_id,
+                mod_name : mod_name,
+                mod_description: mod_description,
+                version : version,
+                mcversion : minecraft_version,
+                mod_author : mod_author
+        )
+    }
+
+    into layout.buildDirectory.dir('classes/java/main')
+}
+
+processResources.enabled = false
+classes.dependsOn 'copyResources'
+
+def reference = "legacyspell/Reference.java"
+
+def templateFile = file('src/main/templates/' + "${reference}")
+def outputFile = layout.buildDirectory.file("generated/templates/" + "${reference}")
+def outputDir = layout.buildDirectory.dir("generated/templates")
+
+def token = [
+        mod_id : mod_id,
+        mod_name: mod_name,
+        version : version
+]
+
+tasks.register('replaceTemplates') {
+    group("templates tasks")
+    inputs.files templateFile, 'gradle.properties'
+    outputs.file outputFile
+    doLast {
+        File out = outputFile.get().asFile
+        out.parentFile.mkdirs()
+
+        out.text = templateFile.text.replaceAll(/\$\{(\w+)\}/) {_, key -> token[key] ?: ""}
+    }
+}
+
+sourceSets.main.java.srcDir outputDir
+compileJava.dependsOn replaceTemplates

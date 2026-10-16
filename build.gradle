@@ -1,0 +1,68 @@
+plugins {
+    id 'net.minecraftforge.gradle' version "6.+"
+    id 'wtf.gofancy.fancygradle' version '1.1.+'
+}
+
+version = "${version_major}.${version_minor}.${version_patch}"
+group = ''
+archivesBaseName = "${mod_name}-${minecraft_version}"
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+// 源码统一按 UTF-8 编译，否则在中文 Windows 上 javac 会以 GBK 解析源码，
+// 导致源码中的中文注释/中文字符串报"编码GBK的不可映射字符"。
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+// 可复现构建：默认情况下 Gradle 会把条目时间戳写进 jar，导致每次 clean build 产出的字节都不同
+// （内容其实一致，解压后 diff 可证）。关掉时间戳并固定条目顺序后，同一份源码永远得到同一个 md5，
+// 交付时才能说"我实测过的 jar 就是你手上这个"。
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+minecraft {
+    mappings channel: "${mappings_channel}", version: "${mappings_version}"
+
+    runs {
+        configureEach {
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+        }
+
+        client {
+            args '--username=InDev'
+            workingDirectory file('run')
+        }
+
+        server {}
+
+
+    }
+
+    legacy {
+        fixClasspath = true
+    }
+}
+
+apply from: 'gradle/scripts/necessary_dependencies.gradle'
+apply from: 'gradle/scripts/dependencies.gradle'
+apply from: 'gradle/scripts/templates.gradle'
+
+// 普通 Forge 模组：不再需要 FMLCorePlugin / TweakClass / FMLAT 这些 coremod 与 mixin 的清单项。
+jar {
+    manifest {
+        attributes(
+                'Specification-Title'    : "${mod_name}",
+                'Specification-Vendor'   : "${mod_author}",
+                'Specification-Version'  : '1',
+                'Implementation-Title'   : "${mod_name}",
+                'Implementation-Version' : "${version}",
+                'Implementation-Vendor'  : "${mod_author}"
+        )
+    }
+
+    finalizedBy('reobfJar')
+}

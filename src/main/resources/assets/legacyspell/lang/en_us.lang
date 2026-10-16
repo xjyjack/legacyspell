@@ -1,0 +1,20 @@
+# PARSE_ESCAPES
+spell.legacyspell\:wind_blade=Wind Blade
+spell.legacyspell\:wind_blade.desc=Flings out an expanding crescent of razor wind that slices through everything in its path.
+spell.legacyspell\:iron_slash=Blade Dash
+spell.legacyspell\:iron_slash.desc=Rockets forward at extreme speed, slashing every foe along the way.
+spell.legacyspell\:aeropic=Aerospace Leap
+spell.legacyspell\:aeropic.desc=Spins forward in a violent lunge, blasting the first foe you hit and hurling you skyward. From the second hit on, you automatically turn toward the nearest foe — keep connecting to chain the attack onward.
+spell.legacyspell\:sky_cleave=Sky Cleave
+spell.legacyspell\:sky_cleave.desc=Locks onto the foe in your sights and carves a rift right through them for shock damage equal to 6% of their maximum health — you never move.
+spell.legacyspell\:efface=Myriad Unity
+spell.legacyspell\:efface.desc=Unmakes the target: 59049 damage, then 59049 void damage if it survives, then erases it from the world outright if it still stands.
+spell.legacyspell\:rebirth=Rebirth
+spell.legacyspell\:rebirth.desc=Unmakes every foe around you at once: each of them takes 59049 damage, then 59049 void damage if it survives, then is erased from the world outright if it still stands.
+spell.legacyspell\:sword_dance=Sword Dance
+spell.legacyspell\:sword_dance.desc=Summons a ring of jade swords that scatter, hover, then dive as one at the last foe the caster struck, dealing armour-piercing damage from the caster.
+spell.legacyspell\:dragon_glide=Dragon Glide
+spell.legacyspell\:dragon_glide.desc=Summons a jade loong that glides along your line of sight, piercing and shocking every foe in its path.
+spell.legacyspell\:ender_shackle=Arcane Shackle
+spell.legacyspell\:ender_shackle.desc=Fires an arcane shackle that pins the target in place with chains — the chains can be broken by attacks.
+potion.legacyspell\:acrobatics=Acrobatics

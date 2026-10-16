@@ -1,0 +1,20 @@
+# PARSE_ESCAPES
+spell.legacyspell\:wind_blade=风刃
+spell.legacyspell\:wind_blade.desc=投掷一道风形成的锋刃，斩击敌人
+spell.legacyspell\:iron_slash=飞刃袭
+spell.legacyspell\:iron_slash.desc=以极高速度向前突进，斩击路径上的所有敌人
+spell.legacyspell\:aeropic=航天腾跃
+spell.legacyspell\:aeropic.desc=旋转着向视线方向猛冲，击伤第一个目标并将其余敌人震开，同时把自己抛向高空；从第二击开始会自动转向距离最近的敌人，只要持续命中就能连续腾跃
+spell.legacyspell\:sky_cleave=裂空斩
+spell.legacyspell\:sky_cleave.desc=锁定视线上的敌人，在其身上直接斩出一道裂隙，造成相当于其最大生命值6%的雷电伤害；施法者原地不动
+spell.legacyspell\:efface=万象归一
+spell.legacyspell\:efface.desc=运用元始的力量，直接抹除目标
+spell.legacyspell\:rebirth=虚无终末
+spell.legacyspell\:rebirth.desc=以自身为中心释放万象归一，将一定范围内所有敌人同时抹除
+spell.legacyspell\:sword_dance=万剑归宗
+spell.legacyspell\:sword_dance.desc=在身周召出环形剑阵，玉剑先向外散开、短暂悬停，随后集体追踪施法者最近攻击的敌人俯冲斩击，造成来自施法者的穿甲伤害
+spell.legacyspell\:dragon_glide=穹空游龙
+spell.legacyspell\:dragon_glide.desc=向前方召出一条游龙，沿视线方向滑翔，贯穿并电击路径上的所有敌人
+spell.legacyspell\:ender_shackle=末影镣铐
+spell.legacyspell\:ender_shackle.desc=使用末影之力把目标禁锢在原地
+potion.legacyspell\:acrobatics=乘风

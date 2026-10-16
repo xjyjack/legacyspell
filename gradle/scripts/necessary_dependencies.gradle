@@ -1,0 +1,20 @@
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+    minecraft(
+            group  : "${forge_group}",
+            name   : "forge",
+            version: "${minecraft_version}-${forge_version}"
+    )
+}
+
+fancyGradle {
+    patches {
+        coremods
+        codeChickenLib
+        asm
+        mergetool
+    }
+}
