@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderEnderChain extends Render<EntityEnderChain> {
 
     private static final ResourceLocation TEXTURE =
-            new ResourceLocation("legacyspell", "textures/entity/arcane_shackle.png");
+            new ResourceLocation("legacyspell", "textures/entity/ender_shackle.png");
 
     private static final int SEGMENTS = 8;
     private static final double WIDTH = 0.3;

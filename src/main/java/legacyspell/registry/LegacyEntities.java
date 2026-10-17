@@ -1,11 +1,16 @@
 package legacyspell.registry;
 
 import legacyspell.Reference;
-import legacyspell.entity.projectile.EntityArcaneShackle;
+import legacyspell.entity.mob.EntitySpectralAerwhale;
+import legacyspell.entity.projectile.EntityEnderShackle;
 import legacyspell.entity.projectile.EntityDashStop;
+import legacyspell.entity.projectile.EntityDisplacementCage;
 import legacyspell.entity.projectile.EntityEnderChain;
+import legacyspell.entity.projectile.EntityEarthEdge;
+import legacyspell.entity.projectile.EntityGaiaPortal;
 import legacyspell.entity.projectile.EntityJadeLoong;
 import legacyspell.entity.projectile.EntityJadeSword;
+import legacyspell.entity.projectile.EntityObsidianRod;
 import legacyspell.entity.projectile.EntitySlashEffect;
 import legacyspell.entity.projectile.EntityWindBlade;
 import net.minecraft.util.ResourceLocation;
@@ -65,10 +70,10 @@ public final class LegacyEntities {
                 .tracker(96, 1, true)
                 .build());
 
-        registry.register(EntityEntryBuilder.<EntityArcaneShackle>create()
-                .entity(EntityArcaneShackle.class)
-                .id(new ResourceLocation(Reference.MOD_ID, "arcane_shackle"), id++)
-                .name(Reference.MOD_ID + ".arcane_shackle")
+        registry.register(EntityEntryBuilder.<EntityEnderShackle>create()
+                .entity(EntityEnderShackle.class)
+                .id(new ResourceLocation(Reference.MOD_ID, "ender_shackle"), id++)
+                .name(Reference.MOD_ID + ".ender_shackle")
                 .tracker(64, 10, true)
                 .build());
 
@@ -77,6 +82,41 @@ public final class LegacyEntities {
                 .id(new ResourceLocation(Reference.MOD_ID, "ender_chain"), id++)
                 .name(Reference.MOD_ID + ".ender_chain")
                 .tracker(96, 1, false)
+                .build());
+
+        registry.register(EntityEntryBuilder.<EntitySpectralAerwhale>create()
+                .entity(EntitySpectralAerwhale.class)
+                .id(new ResourceLocation(Reference.MOD_ID, "spectral_aerwhale"), id++)
+                .name(Reference.MOD_ID + ".spectral_aerwhale")
+                .tracker(96, 2, true)
+                .build());
+
+        registry.register(EntityEntryBuilder.<EntityDisplacementCage>create()
+                .entity(EntityDisplacementCage.class)
+                .id(new ResourceLocation(Reference.MOD_ID, "displacement_cage"), id++)
+                .name(Reference.MOD_ID + ".displacement_cage")
+                .tracker(64, 10, true)
+                .build());
+
+        registry.register(EntityEntryBuilder.<EntityGaiaPortal>create()
+                .entity(EntityGaiaPortal.class)
+                .id(new ResourceLocation(Reference.MOD_ID, "gaia_portal"), id++)
+                .name(Reference.MOD_ID + ".gaia_portal")
+                .tracker(32, 10, true)
+                .build());
+
+        registry.register(EntityEntryBuilder.<EntityEarthEdge>create()
+                .entity(EntityEarthEdge.class)
+                .id(new ResourceLocation(Reference.MOD_ID, "earth_edge"), id++)
+                .name(Reference.MOD_ID + ".earth_edge")
+                .tracker(64, 2, true)
+                .build());
+
+        registry.register(EntityEntryBuilder.<EntityObsidianRod>create()
+                .entity(EntityObsidianRod.class)
+                .id(new ResourceLocation(Reference.MOD_ID, "obsidian_rod"), id++)
+                .name(Reference.MOD_ID + ".obsidian_rod")
+                .tracker(64, 2, true)
                 .build());
     }
 }

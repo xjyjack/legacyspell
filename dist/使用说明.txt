@@ -1,360 +1,155 @@
 ================================================================
- LegacySpell 1.0.2 — Electroblob's Wizardry 附属模组
+ LegacySpell 1.0.3 — Electroblob's Wizardry 附属模组
  Minecraft 1.12.2 / Forge 14.23.5.2860
+ 依赖：Electroblob's Wizardry 4.3.6（ebwizardry）
 ================================================================
 
-【这个模组做了什么】
-新增九个法术：
-  * 复刻自 1.20.1 模组 wind_spellbooks：
-      - 风刃（legacyspell:wind_blade）
-      - 飞刃袭（legacyspell:iron_slash）
-      - 航天腾跃（legacyspell:aeropic）
-  * 复刻自 1.20.1 模组 ISS: Magic From The East：
-      - 万剑归宗（legacyspell:sword_dance）
-      - 穹空游龙（legacyspell:dragon_glide）
-  * 复刻自 1.20.1 模组 Iron's Spells 'n Spellbooks：
-      - 末影镣铐（legacyspell:ender_shackle）
-  * 本次全新原创：
-      - 裂空斩（legacyspell:sky_cleave）
-      - 万象归一（legacyspell:efface）
-      - 虚无终末（legacyspell:rebirth）
+【本版做了什么】
+在 1.0.2 的九个法术之外新增四个法术，合计 13 个：
+  * 复刻自 1.21.1 模组 aether_spellbooks（Aether 的 ISB 附属）：
+      - 鲸歌（legacyspell:aerwhale_song）—— 闪电系
+  * 复刻自 1.21.1 模组 Fire's Ender Expansion（ISB 附属）：
+      - 置换牢笼（legacyspell:displacement_cage）—— 秘术系
+      - 盖亚宝库（legacyspell:gaia_treasury）—— 大地系
+      - 黑曜石棒（legacyspell:obsidian_rod）—— 秘术系
+  * 原有九个（风刃 / 飞刃袭 / 航天腾跃 / 万剑归宗 / 穹空游龙 /
+    末影镣铐 / 裂空斩 / 万象归一 / 虚无终末）行为与 1.0.2 一致，未改动
+
+本版相对 1.0.3 初版的改动：
+  1. 秘术斩（arcane_slice）已整体删除（法术、实体、音效、贴图、语言条目全部移除）
+  2. 鲸歌的幽灵鲸改为真正的生物实体（EntityFlying），并修复"完全不显示"的渲染问题
+  3. 置换牢笼去掉那层像药水一样的紫黑粒子，光柱改由 spawnTeleportParticles
+     生成并加粗（径向双层 + 4 层高度，每 2 tick 160 粒，第一版为 28 粒）
+  4. 终末之门 → 盖亚宝库：绿色传送门、大地系、启动＋持续双段耗魔，
+     射出的武器改为独立实体 EntityEarthEdge（贴图 earth_edge.png）
+  5. 末影镣铐的实体 id 与贴图统一改名为 ender_shackle（原为 arcane_shackle）
+  6. 黑曜石棒现在能真正打中末影人：既造成伤害，也把它锚定在原地
+  7. 全程不新增任何 Minecraft 学派（Element 枚举保持原版 8 个）
 
 ----------------------------------------------------------------
-风刃（legacyspell:wind_blade）：
-法术行为：
-  * 掷出一道持续扩张的锐风新月，飞行速度 1.44 格/tick（恒定），实际飞行距离 72 格
-  * 存在 50 tick，刀刃半径从 0.6 格一路涨到 1.5 格（越飞越宽，越难躲）
-  * 斩过路径上的所有生物，每个目标只吃一次伤害
-  * 穿透实体：打中生物不停留，继续飞
-  * 穿透方块：撞到方块不消散，继续飞
-  * 也就是说，除了 50 tick 的寿命，没有任何东西能让它停下来
-  * 不受重力影响（直线飞行，不下坠）
-  * 伤害 15，耗魔 30，冷却 30 tick（1.5 秒）
-  * 学派：闪电（Lightning），学徒(Apprentice) 阶
-  * 造成的伤害类型为 间接魔法伤害（IndirectMagicDamage），DamageType = SHOCK（电击）
+鲸歌（legacyspell:aerwhale_song）—— 复刻自 aether_spellbooks 的 Aerwhale Song
+  * 学派：闪电（Lightning），进阶(Advanced)；耗魔 70，冷却 700 tick（35 秒），蓄力 25 tick
+  * 召唤一条幽灵鲸，从你身后 10 格、上方 6 格出发，沿你面朝的【水平方向】
+    以 0.5 格/tick 游过，路径长 44 格（存活 88 tick = 4.4 秒）
+  * 从第 10 tick 起每 10 tick（半秒）唱响一次"鲸歌"：
+      - 向下探测 14 格找到地面，以鲸正下方为中心、半径 3.5 格（JSON 可调）
+        的圆柱范围生效
+      - 敌人：4 点 SHOCK 电击伤害，向上抛起（motionY 至少 0.55），
+        水平速度衰减到 60%，并附加 30 tick 缓慢 I
+      - 友军（施法者本人与同队单位）：附加"鲸之祝福"80 tick ——
+        1.12.2 没有 slow_falling 药水，本模组用自定义药水等效实现：
+        持续清零摔落距离并把下落速度限制在 -0.2 格/tick（缓降），
+        同时附加原版跳跃提升 II 80 tick
+  * 幽灵鲸是一个真正的生物实体（继承 EntityFlying，不是弹射物）：
+    无碰撞、无重力、无敌、不会被保存，到期自动消失
+  * 渲染：直接移植 The-Aether-Archived-1.12.2 的 AerwhaleModel（512×64 贴图、
+    11 个部件），并按 Aether 的 AerwhaleRenderer 做 -90° 偏航、2 倍缩放、开启背面剔除；
+    额外用 0.72 透明度 × 首尾淡入淡出，得到"幽灵形态"
+    贴图挪用 Aether 原版 textures/entities/aerwhale/aerwhale.png
+  * 【本版修复】之前"完全看不见"的原因：渲染器用实体寿命算淡入淡出，
+    而寿命字段只在服务端赋值，客户端实体走无参构造时该字段恒为 0，
+    于是淡入淡出系数始终是 0，doRender 第一行就 return 了。
+    现在寿命与朝向改用 DataManager 同步（LIFETIME / HEADING_X / HEADING_Z），
+    并保留 88 tick 的兜底值，客户端一定能算出正常透明度；
+    另外加了 0.3 的最低可见度与 40 tick 的收尾缓冲，避免任何同步抖动导致隐身。
+  * 音效：施法音用原版 entity/ghast/scream；每次歌唱在鲸身与鲸头喷出音符粒子
 
 ----------------------------------------------------------------
-飞刃袭（legacyspell:iron_slash）：
-  * 蓄力施法（chargeup 10 tick = 0.5 秒）；射程 range = 9 格，基础伤害 11
-  * 不再是瞬移，而是一次"超高速移动"：
-      - 把视线方向上 9 格的路程分摊到 4 tick，得到约 2.25 格/tick 的冲刺速度（上限 5 格/tick）
-      - 因为 1.12.2 里玩家的位置由客户端主导，服务端只改 motion 客户端看不到，
-        所以本模组额外发送 SPacketEntityVelocity 把这段速度同步给玩家客户端，
-        玩家是真的"飞过去"，而不是起点消失、终点出现的闪现
-      - 同时生成一个不可见的 dash_stop 实体全程跟着这段冲刺
-  * 【无瞬移尾段】dash_stop 全程【只写速度、绝不写位置】：每 tick 朝着终点方向重新施加一次速度
-    （这样空气阻力不会让玩家半路停下），冲刺窗口结束后把速度归零，让玩家平滑滑停。
-    终点仍保留"落地高度修正 + 卡墙抬升"，不会把玩家塞进地形里。
-  * 沿冲刺路径对每个敌人造成一次伤害（SHOCK 类型），并击退一点点
-  * 伤害 = 法术伤害(11) + 施法者手持武器攻击力
-  * 若施法者处在寒冷环境（群系温度 < 0.2），命中目标会被附加 3 秒缓慢 II
-  * 每个被击中的目标身上生成一道"斩击"视觉特效（slash_effect 实体，10 tick 后消失）
-  * 学派：闪电（Lightning），学徒(Apprentice) 阶；耗魔 35，冷却 75 tick（3.75 秒）
+置换牢笼（legacyspell:displacement_cage）—— 复刻自 FEE 的 Displacement Cage
+  * 学派：秘术（Sorcery），进阶(Advanced)；耗魔 80，冷却 800 tick（40 秒），蓄力 20 tick
+  * 在准星指定的敌人位置（或射线落点，自动吸附地面）撑开半径 8 格的圆形置换力场，
+    持续 200 tick（duration × 法术强度，JSON 可调）
+  * 力场内的敌人被"登记"；一旦走出圆圈，立刻被传送到圆心的镜像对称点
+    （保持自身高度，落点有方块则自动上抬），传送前后各 16 粒 PORTAL 粒子与末影音效
+  * 友军、创造/观察模式玩家不受影响；力场到期自动消失
+  * 粒子光柱（本版加粗）：
+      20 条角度（原 14）× 4 层高度 0.1 / 0.7 / 1.3 / 1.9 格（原 2 层）
+      × 2 层径向（半径 100% 与 94%，用来制造厚度）
+      = 每 2 tick 160 粒 PORTAL（第一版为每 2 tick 28 粒）
+      全部由 spawnTeleportParticles 撒点生成，单粒带 0.5 格随机抖动，
+      因此光柱是一根有体积的"雾柱"而不是一圈细线
+  * 上一层版本里混进来的秘术系 DARK_MAGIC 紫黑粒子已全部移除，
+    粒子成分回到第一版：只有末影传送用的原版 PORTAL
 
 ----------------------------------------------------------------
-航天腾跃（legacyspell:aeropic）：
-  * 学派由 秘术(Sorcery) 改为 闪电(Lightning)
-  * 【动能加强】dash_power = 1.5，冲量放松系数 0.55
-  * 【第三/其他玩家视角：先俯卧、再旋转】用 GL 矩阵整体旋转模型（Pre pushMatrix，
-    先脸朝下放平，再绕自身前进轴自转；Post popMatrix）
-  * 【第一人称视角：改为向移动方向平移】不对镜头做任何旋转/俯冲
-  * 【白色气雾粒子】法术作用期间施法者周身持续冒出白色气雾（CLOUD 粒子）
-  * 【只伤害第一个目标】每 tick 用"移动扫掠体"判断是否撞到新的生物：
-      - 命中后只对这一个目标造成 SHOCK 电击伤害
-      - 同时触发一次半径 4 格的衰减 AOE（同为 SHOCK），作用于其余敌人
-      - 命中瞬间把施法者抛向空中（motionY = 0.9）
-  * 【可重复进行（连击）】每次成功命中消耗一次连击次数（max_hits），
-    并沿视线方向继续前冲（水平 2.5 格/tick + 0.9 向上弹射）
-  * 【从第二击开始自动转向】命中第 2 次及以后，会把玩家的【视觉方向与
-    运动方向】一起掰向"上一击命中那一刻距离玩家最近的非友善实体"：
-      - 转向目标在每次命中时重新选取：直接取"命中那一刻距离玩家最近的
-        非友善实体"（不排除刚打中的那个——否则打单怪时记忆目标永远为空，
-        视角永远不转；这是上一版视角不转的根因之一）
-      - 服务端写 yaw/pitch/headYaw/headPitch，并额外通过本模组自己的网络通道
-        （legacyspell 频道，AeropicFaceMessage）把 yaw/pitch 直接发给该玩家客户端，
-        客户端收到后在主线程直接写 player.rotationYaw/rotationPitch。
-        这彻底绕开了原版传送通道（SPacketPlayerPosLook / setPlayerLocation）的全部
-        不确定性：不再有 teleportId 回执、位置吸附、"增量坐标"语义问题。
-        服务端同一 tick 的 SPacketEntityVelocity 紧随其后，客户端速度按新朝向重设。
-      - 上一版的两个 bug（已修）：
-        ① setPlayerLocation 带 X/Y/Z 标志时传入坐标是"增量"语义，上一版传了
-           绝对坐标 → 目标位置被算成 2 倍；② 原版回执通道本身也容易受网络/时序影响。
-      - 连击次数严格按"每次成功命中"扣；药水时长 max(20, max_hits × 15) tick；
-        扫掠命中优先挑不在无敌帧内的敌人
-      - 效果名中文翻译修复：药水名改用 "potion.legacyspell:acrobatics"（冒号），
-        与语言文件里的键真正对上，不再显示原始 key
-  * 学派：闪电（Lightning），学徒(Apprentice) 阶；耗魔 30，冷却 240 tick，基础伤害 5
+盖亚宝库（legacyspell:gaia_treasury）—— 复刻自 FEE 的 Gate of Ender（已重做）
+  * 学派：大地（Earth），宗师(Master)；基础耗魔 15，蓄力 15 tick，冷却 1200 tick（60 秒）
+  * 持续型法术（continuous），与 Wizardry 的 Lightning Web 相同的双段耗魔结构：
+      启动消耗 = chargeup 15（按下右键蓄力时一次性付出）
+      持续消耗 = cost 15，由法杖每 10/20 tick 分摊扣除
+    最长持续 200 tick（10 秒），每 5 tick 齐射一轮，松开即停
+  * 三种开火模式（与原版一致）：
+      - 瞄准敌人：在目标周围生成传送门，径向朝目标射刃，伤害减半
+      - 潜行：在头顶 4 格生成传送门，向下倾泻【追踪】玉刃
+      - 常规：在身边随机方向生成传送门，沿视线乱射
+  * 传送门（gaia_portal 实体）：存在 20 tick，第 5 tick 射出玉刃。
+    本版改为绿色——粒子改用 Wizardry 的 LEAF（绿色树叶粒子），色值 0x55FF55（RGB 85/255/85），
+    四边面片也从原来的紫黑改为绿色叠加
+  * 射出的武器（earth_edge 实体，EntityEarthEdge）：
+    独立的专属实体，不再直接复用 EntityJadeSword，也不再用 jade_sword.png，
+    而是用本模组自带的 textures/entity/earth_edge.png
+    （几何沿用同尺寸 64×64 的剑形模型，贴图换成大地裂刃的绿色材质），
+    飞行速度恒定 2.0 格/tick，存活 100 tick，穿透实体，FORCE 伤害 7.5
+    渲染时按实际速度方向实时算出 lastYaw / lastPitch 来摆正剑身
+  * 图标挪用 FEE 原版 gate_of_ender.png
 
 ----------------------------------------------------------------
-剑舞（legacyspell:sword_dance）—— 复刻自 ISS: Magic From The East
-  * 学派：秘术（Sorcery），进阶(Advanced) 阶；耗魔 80，冷却 120 tick，蓄力 15 tick
-  * 所有玉剑都生成在【同一个点】——施法者双眼下方 0.75 格：
-      数量 = 5 + 3 × (法术强度 - 1)，钳制在 2 ~ 16 把（数量受 potency 影响）
-      初速度 = (0,0,1).xRot(1°).yRot(360/数量 × i)，即 1° 下压 + 均匀水平扇形，速度 1.0 格/tick
-  * 每把玉剑分四段行为（与原版一致）：
-      1) waitTimer 120 → 110：保持初速向外飞出
-      2) waitTimer 110 → 100：速度归零，原地悬停
-      3) waitTimer 100 → 10：以 2.0 格/tick 俯冲追踪目标，进入 1.6 格内立即斩击
-      4) waitTimer == 5：碎裂特效（碎屑粒子 + 物品碎裂音效）；waitTimer == 0：消失
-  * 【本轮修复：模型朝向各自独立】朝向状态（lastYaw/lastPitch）原先放在
-    渲染器实例上，而一个渲染器实例要渲染全部玉剑——悬停阶段（速度归零、需要
-    沿用上一帧朝向）时所有玉剑会共用同一个朝向值，看起来"所有剑都朝同一个方向"。
-    现已把朝向状态搬到实体自身（EntityJadeSword.lastYaw/lastPitch），
-    每把剑全程保持【自己的运动方向】朝向，互不干扰。
-    注：初始速度扇形生成与 ISS 原版逐值一致（(0,0,1).xRot(1°).yRot(360/数量×i)），
-    速度通过 tracker 的 sendsVelocityUpdates=true 同步给客户端
-  * 【本轮变更：撞方块不再消失】命中方块只溅出少量魔珠粒子，玉剑继续飞行
-    （追踪和外飞阶段都会穿过地形，直到寿命尽头碎裂）
-  * 【本轮变更：追踪 Y 轴容差】俯冲方向的竖直分量被限制在
-    水平距离 × 0.6（约 31°）以内（下限 0.5 格/tick），
-    目标在头顶/脚下时不再垂直俯冲，而是先水平逼近再小幅下压
-  * 【本轮变更：伤害类型】改为原版 generic 类型伤害：
-    EntityDamageSource("generic", 施法者)（无施法者时为无来源 generic），
-    setDamageBypassesArmor() 无视护甲，击杀归属施法者
-  * 【本轮修复：追踪目标三级兜底】原版只认 owner.getLastHurtMob()（1.12.2 对应
-    getLastAttackedEntity()），一旦这个值为 null 或目标已死，追踪阶段就整段失效，
-    玉剑只会悬停然后碎裂。现在按以下顺序解析目标，保证俯冲斩击永远发生：
-      ① 施法者实时记录的最近攻击对象（保持原版语义）
-      ② 施法瞬间用 setRememberedTarget() 记住的那个实体 ID（已随 NBT 持久化）
-      ③ 施法者周围 48 格内最近的敌对实体
-  * 【本轮修复：斩击判定不再依赖 tick 射线粗细】进入 1.6 格直接触发 strike()，
-    不再完全依赖 EntityThrowable 每 tick 的射线是否正好扫到碰撞箱
-  * 【穿甲】伤害为"来源为施法者"的间接魔法伤害，
-    并调用 DamageSource.setDamageBypassesArmor() 使其无视护甲
-  * 【一 tick 多穿】同一 tick 内可沿运动方向连续穿透最多 6 个目标（原版 hitPerTicks++ < 5）
-  * 【命中即收】ticksExisted > 10 之后命中会清零目标的受伤无敌帧，并让这把剑消失（已取消）
-  * 每三把剑静音一把（原版同样做法，避免命中音效过密）
-  * 基础伤害 damage = 8（再乘法术强度），每把剑独立结算
-  * 渲染：ModelJadeSword 把原版 jade_sword.geo.json 逐个 bone/cube 移植成
-    1.12.2 原版 ModelRenderer/ModelBox（1.12.2 没有 GeckoLib），贴图用原版 64×64 jade_sword.png
-  * 【朝向跟随运动方向】渲染时直接读实体当前 motion 计算 yaw/pitch
-    （yaw = atan2(mx, mz)，pitch = atan2(my, 水平分量)，与 1.12.2
-    EntityThrowable 字节码里的写法一致），再旋转模型使剑尖（模型 −Z 方向）
-    严格指向运动方向；悬停阶段速度近零时保持上一次的朝向
+黑曜石棒（legacyspell:obsidian_rod）—— 复刻自 FEE 的 Obsidian Rod
+  * 学派：秘术（Sorcery），学徒(Apprentice)；耗魔 15，冷却 200 tick（10 秒）
+  * 持续型法术：按住右键不断投出黑曜石棒，速度恒定 3.0 格/tick，存活 100 tick
+  * 命中造成 4 点 FORCE 伤害，并附加"锚定"效果 140 tick（7 秒）：
+      每 tick 清零水平速度、清零摔落距离 → 目标无法走动、无法被击退
+  * 【本版重点】黑曜石棒现在能真正打中末影人，原因有两层：
+      ① 末影人对"间接伤害源"（EntityDamageSourceIndirect，所有弹射物与魔法）
+         在 1.12.2 里根本不走正常受伤流程——它只会连续尝试 64 次随机传送，
+         成功就 return true，64 次都失败就 return false，两条路都不掉血。
+         所以本模组先尝试间接伤害，若目标完全没掉血，再补一次【直接】魔法伤害，
+         保证末影人这类生物也会正常受伤。
+      ② 末影人的传送会发出 Forge 的 EnderTeleportEvent，本模组监听它，
+         只要实体身上已有"锚定"就取消传送（setCanceled）。
+         因此棒子命中时是"先上锚定、再造成伤害"的顺序，
+         末影人在受伤当帧就已经锚死，既传送不走也跑不掉。
+      被拦下时会喷 12 粒末影粒子并播放玻璃破碎音效作为反馈。
+      未带锚定的生物仍然可以正常传送。
 
 ----------------------------------------------------------------
-御龙滑翔（legacyspell:dragon_glide）—— 复刻自 ISS: Magic From The East
-  * 学派：闪电（Lightning），学徒(Apprentice) 阶；耗魔 25，冷却 25 tick，蓄力 10 tick
-  * 出生点 = 施法者位置 + 视线方向 1 格，高度 = 眼睛高度 - 半个龙身高度（与原版一致）
-  * 无重力，沿视线以 0.864 格/tick 滑翔；寿命 80 tick，到期时放碎裂特效并消失
-  * 【速度 ×1.44】在 SpellDragonGlide 里覆写 calculateVelocity()
-    乘上 VELOCITY_MULTIPLIER = 1.44（与风刃同款做法），最终 0.864 格/tick；
-    dragon_glide.json 里的 range 保持原值未动
-  * 【穿透方块】原版用 noPhysics + 空的 onHitBlock 让游龙直接穿过方块；
-    本模组改为"命中方块时不写回 inGround"，EntityThrowable 就永远不会把它钉住
-  * 【穿透敌人】沿途扫到的每个敌人各吃一次 SHOCK 电击伤害，命中后不消散
-  * 【免击退】命中时保存并恢复目标的 motion，抵消伤害带来的击退
-    （对应原版的 DamageSources.ignoreNextKnockback）
-  * 【粒子全部改用巫师模组自带的 ParticleBuilder 现成写法】1.12.2 的 vanilla 粒子
-    要么根本不带颜色（END_ROD / fireworks_spark / CRIT_MAGIC 全是白或固定色），
-    要么颜色与速度绑死（SPELL_MOB 的 RGB 直接取自它的运动参数，字节码已确认
-    ParticleSpell$MobFactory 把 motionX/Y/Z 当成 RGB 传给 setRBGColorF），
-    所以上一版无论换哪个 vanilla 粒子都是白的，这就是"依然白色"的根因。
-    巫师模组 4.2+ 自带 ParticleBuilder（.clr(r,g,b) 染色 + .pos/.vel/.time/.target
-    等链式 API），且 ParticleBuilder 自身没有 @SideOnly、ParticleWizardry 的类级
-    @SideOnly 也被原作者注释掉了 —— 巫师自己的 EntityThunderbolt（同为 SHOCK 电击
-    投射物）就是在公共实体类里直接调它，所以本模组照抄这套写法。
-  * 【深青色 #128575】颜色按你指定的深青色 0x128575（= RGB 18,133,117）精确上色，
-    通过 ParticleBuilder.clr(int hex) 的十六进制重载直接写死；同时粒子类型也取自
-    闪电学派——Type.SPARK 的贴图就是 lightning_0_0.png 那套电火花动画、
-    Type.LIGHTNING 就是闪电学派的 3D 电弧，本身就是闪电学派粒子。
-    你上一轮说"有限找深青色，没有就用 lightning 学派粒子特效"，这里两者合一：
-    深青色精确上到了闪电学派的粒子上
-  * 尾迹：每 tick 沿"垂直于运动方向的圆"撒 8 个 Type.SPARKLE（柔边圆形发光粒子，
-    11 帧动画，time(16)，无重力、不碰撞、关深度测试），全部染成 #128575，
-    绕运动轴旋转成一条深青色发光管 —— 视觉上对应 ISS 原版的 GLOW 尾迹，不再用水气泡。
-    （上一版尾迹用 Type.SPARK，默认只有 3 tick 寿命，光带太短；改用 SPARKLE 留痕更长）
-  * 命中（撞敌 / 到期 / 撞方块）：
-      - 12 个 Type.SPARK 深青色（0.6 半径随机撒开，move=true 从命中点向外炸开，
-        对应 ISS 的 SCRAPE）
-      - 6 个 Type.SPARKLE 深青色（缓升，20~29 tick）
-      - 2 个 Type.LIGHTNING 深青色小电弧（.target() 指定端点；必须设端点，
-        因为 ParticleTargeted 的 targetX/Y/Z 默认是 0，不设端点会朝世界原点
-        拉一条横跨地图的直线）
-      - 1 个 Type.FLASH 深青色（scale 1.6 的青色闪光）
-  * 客户端/服务端分工：粒子只在客户端生成（ParticleBuilder.spawn 在服务端会直接
-    return 并打 warning，这是巫师自带的保护逻辑），因此命中特效改由客户端触发：
-      撞敌扫掠 + 尾迹 → onUpdate 的 world.isRemote 分支
-      撞方块        → onImpact 的 world.isRemote 分支
-      到期消失      → 重写 setDead() 触发（比上一版"服务端 ticksExisted > LIFETIME
-                      时 spawnParticle"更稳：客户端实体一被移除就正好在原位炸开）
-  * 【速度 ×1.44】VELOCITY_MULTIPLIER = 1.44，最终 0.6 × 1.44 = 0.864 格/tick；
-    dragon_glide.json 里的 range 保持原值未动
-  * 【本轮变更：上下扭动角度 ×1.3】glide 动画的身体起伏关键帧整体放大 1.3 倍：
-    loong 本体 ±10° → ±13°、body2 与 connect ±5° → ±6.5°
-    （jaw / nose / moustache 的头部细节保持原版数值）
-  * 渲染：ModelJadeLoong 把原版 jade_loong.geo.json 逐个 bone/cube 移植成
-    1.12.2 原版 ModelRenderer/ModelBox，并复刻 jade_loong.animation.json 的 glide 待机动画
-    （龙头起伏、下颚、鼻、须、身体波动），贴图用原版 128×128 jade_loong.png
-    —— 不再是之前那条"飞行轨迹缎带"
-  * 【本轮修复：动画不播放的根因】1.12.2 的 ModelBase.render() 与
-    ModelBase.setRotationAngles() 都是空实现（字节码确认 Code: 0: return），
-    所以子类只要重写 render() 而不自己调 setRotationAngles(...)，骨骼旋转就永远不会更新，
-    游龙表现为"平行平移"。现在 render() 第一行就调用 setRotationAngles，
-    glide 动画（1 秒循环）正常播放。
-  * 【朝向跟随运动方向】渲染时直接读实体当前 motion 计算 yaw/pitch
-    （yaw = atan2(mx, mz)，pitch = atan2(my, 水平分量)），再旋转模型使龙头
-    （模型 −Z 方向）严格指向运动方向。出生瞬间 motion = 玩家视线方向 × 初速，
-    所以初始朝向自动指向玩家指向；旧渲染器的 rotate(-yaw) 与
-    EntityThrowable 的 yaw 约定相差一个镜像，朝东西飞时模型是反的。
-  * 注：原版施法蓄力 30 tick（CastType.LONG），本模组沿用巫师模组既有的 10 tick；
-    想改成 30 tick 只需把 dragon_glide.json 的 "chargeup" 改成 30
+【重要】关于学派：不新增 Element
+  gaia_treasury 的"自然/盖亚"主题直接落在 Wizardry 原生的【大地 Earth】学派上，
+  没有通过 WizardryEnumHelper 添加任何新学派，Element 枚举始终保持原版 8 个。
+  原因：Wizardry 4.3.6 的 BlockPedestal（符文石基座）用
+  element.ordinal() + (natural ? 允许值数量 : 0) 编码方块元数据，
+  8 个学派时最大 meta 恰好 14；一旦出现第 9 个学派，
+  最大 meta 会变成 16，撞上 Minecraft 4 bit 元数据上限，
+  导致游戏在注册方块阶段直接崩溃。
+  因此本模组不碰学派枚举，只把法术挂到大地系。
 
 ----------------------------------------------------------------
-奥术镣铐（legacyspell:ender_shackle，原 arcane_shackle）—— 复刻自 Iron's Spells 'n Spellbooks
-  * 学派：亡灵（Necromancy），进阶(Advanced) 阶；耗魔 45，冷却 90 tick，蓄力 10 tick
-  * 射出一枚镣铐投射物（射程 range = 40），行为分两种：
-      - 命中【生物】：在目标四周 120° 各钉下一根锁链（共 3 根），
-        半径 = lashRadius(5) × 0.5 + 目标宽度 × 0.4，并自动吸附到就近地表高度
-      - 命中【方块】：在落点 5 格范围内寻找最近的 3 个敌人，各钉一根锁链
-  * 每根锁链是一个 ender_chain 实体，每 tick 把被束缚的目标朝锚点方向拖拽
-    （motion += 位移 × -0.015，并同步 velocityChanged，玩家和生物都能被拉动）
-  * 锁链断裂条件：目标死亡 / 目标离开 12 格 / 超过锁链寿命 / 锁链生命值归零
-  * 锁链生命值 = 15 × 法术强度；锁链寿命 = 100 + 40 × 法术强度 tick
-  * 锁链可以被攻击打碎（10 tick 受击无敌帧；对施法者本人免疫）
-  * 渲染说明：原作使用 PartEntity 分节绳索；本模组用单个实体 +
-    从锚点连向目标躯干的平铺链条四边形代替
+【末影镣铐改名说明】
+  法术 id 一直是 legacyspell:ender_shackle（中文名"末影镣铐"），
+  但它的实体 id 与贴图此前叫 arcane_shackle。本版已全部统一为 ender_shackle：
+      SpellArcaneShackle   → SpellEnderShackle
+      EntityArcaneShackle  → EntityEnderShackle
+      RenderArcaneShackle  → RenderEnderShackle
+      实体 id arcane_shackle → ender_shackle
+      贴图 textures/entity/arcane_shackle.png → ender_shackle.png
+      英文名 Arcane Shackle → Ender Shackle
+  注意：实体 id 变更后，旧存档里已经飞在半空中的镣铐投射物会变成"missing id"
+  并被清除——这不影响法术本身，重新施放即可。
 
 ----------------------------------------------------------------
-裂空斩（legacyspell:sky_cleave）—— 本次全新
-  * 学派：闪电（Lightning），大师(Master) 阶；耗魔 120，冷却 120 tick，无蓄力
-  * 定位：飞刃袭的"远程版"，但完全【没有位移】
-  * 施法者原地不动，用实体射线检测锁定视线上的敌人（射程 range = 12）
-  * 直接在敌人身上生成一道斩击图标（复用 slash_effect 实体）
-  * 伤害 = 该敌人【最大生命值的 6%】（getMaxHealth() × 0.06），类型为 SHOCK 电击
-      - 注意：这是按目标血量缩放，不随法术强度增长
-  * 视线上没有敌人时，只在射线打到的方块位置放一个斩击特效作为空挥反馈，不造成伤害
-  * 已修掉"远处目标不显示斩击特效"的问题：原因是渲染距离判定用的
-    Entity.isInRangeToRenderDist() = 碰撞箱平均边长 × 64，斩击图标的碰撞箱很小，
-    超过 64 × 边长 就被判为不可渲染；现在 slash_effect 关掉了这个剔除
+【安装】
+  1. 把 LegacySpell-1.12.2-1.0.3.jar 与 ElectroblobsWizardry-1.12.2-4.3.6.jar
+     一起放进 .minecraft/mods/
+  2. 启动 Forge 14.23.5.2860 的 1.12.2 客户端
+  3. 法术通过法术书/法杖正常获取，也可用 /cast 或创造模式法术书查看
 
-----------------------------------------------------------------
-万象归一（legacyspell:efface，原 myriad_unity）—— 全新
-  * 学派：无学派 → 映射为 Wizardry 的 magic（巫师模组没有"无学派"这个枚举值）
-  * 阶位：大师(Master)；耗魔 200，冷却 600 tick（30 秒），蓄力 40 tick（2 秒）
-  * 锁定视线上的敌人（射程 range = 30），依次结算三段：
-      第一段：59049 点伤害，来源为施法者
-              （玩家用 DamageSource.causePlayerDamage，其他生物用 causeMobDamage）
-      第二段：若目标未死，再造成 59049 点伤害，类型为 out_of_world
-              （无视护甲、标记为魔法伤害）
-      第三段：若仍未死，则 setHealth(0) + setDead() + world.removeEntity()
-              —— 直接把实体从世界上抹除，不走死亡流程、不掉落物品
-  * 59049 = 3 的 10 次方，只是"归于一"的仪式数字，机制上没有任何依赖
-  * 死亡讯息：被第二段伤害击杀时会显示对应死亡提示
-  * 伤害类型注册已统一走公共注册路径，自定义的 VoidDamageSource 类已删除
-  * 【本轮变更：去除一切特效】爆炸（EXPLOSION_HUGE + 音效）与"消解"粒子
-    （PORTAL + ENCHANTMENT_TABLE）已全部移除。现在目标被抹除时
-    没有任何粒子/音效表现，只有纯粹的三段伤害结算与强制抹除。
+【可调参数】
+  所有数值都可在 jar 内 assets/legacyspell/spells/*.json 中修改，
+  也可用资源包覆盖同名文件。
 
-----------------------------------------------------------------
-虚无终末（legacyspell:rebirth）—— 本轮全新
-  * 效果等同于万象归一，但【对一定范围内的所有实体同时生效】（以施法者自身为中心）
-  * 阶位：大师(Master)；耗魔 400，冷却 1200 tick（60 秒），蓄力 60 tick（3 秒）
-  * 范围 = range（12 格）× 范围升级模组倍率
-  * 结算规则：范围内所有敌对 EntityLivingBase（排除施法者本人与同队单位），
-    各自独立走一遍万象归一的三段结算：
-      第一段 59049 点施法者来源伤害 → 第二段 59049 点 out_of_world 伤害
-      → 第三段 setHealth(0) + setDead() + world.removeEntity() 强制抹除
-  * 与万象归一共用同一套抹除结算（annihilate），同样无任何特效
-  * 施法者不消耗位移、不需要瞄准，适合在敌群中直接开大
-
-================================================================
-【版本号的同步】
-版本号同时写在三处，构建时会自动展开成同一个值：
-  * gradle.properties 的 version_major/version_minor/version_patch（= 1.0.2）
-  * src/main/resources/mcmod.info 的 "version": "${version}"   ← 由 copyResources 任务展开
-  * src/main/templates/legacyspell/Reference.java 的 MOD_VERSION = "${version}"
-    ← 由 replaceTemplates 任务替换，最终注入 @Mod(version = ...)
-
-【速度倍率是"写在代码里"的，不是写在 JSON 里】（风刃）
-  * 法术属性 JSON 的 range 保持原值 60。
-  * SpellProjectile.calculateVelocity() 对无重力投射物算出的初速是 range / lifetime = 60 / 50 = 1.2 格/tick
-  * 本模组在 SpellWindBlade 里覆盖 calculateVelocity()，乘上 EntityWindBlade.VELOCITY_MULTIPLIER = 1.2，
-    得到最终 1.44 格/tick。想调速只改这个常量，JSON 不用碰。
-  * 速度恒定：补上 motion /= 0.99 抵消 vanilla 的 *= 0.99 衰减，全程稳在 1.44。
-
-【运行所需】
-把下面两个 jar 一起丢进 .minecraft/mods/ 或服务端 mods/：
-
-  LegacySpell-1.12.2-1.0.2.jar           ← 本模组
-  ElectroblobsWizardry-1.12.2-4.3.6.jar  ← 前置：Electroblob's Wizardry
-
-不需要 MixinBooter，本模组已不是 coremod，jar 里不含任何 mixin 配置与 coremod 清单项。
-
-Minecraft 1.12.2 + Forge 14.23.5.2860
-
-jar 校验值（MD5）：36d5aa062d46feeb8295241fbf8a8065
-  构建已开启可复现设置（preserveFileTimestamps=false + reproducibleFileOrder=true），
-  同源码连续两次 `gradlew build` 产出的 jar 字节完全一致，可用 md5 核对你手上的 jar。
-  核对命令：md5sum LegacySpell-1.12.2-1.0.2.jar
-
-【怎么拿到这些法术】
-和普通巫师模组法术一样，任意一种都行：
-  * 法术书（Spell Book）里会直接出现
-  * 奥术工作台用水晶 + 卷轴合成
-  * 法杖（Wand）里可以把它插进去
-  * 创造模式物品栏搜英文名或中文名
-      Wind Blade / Blade Dash / Aerospace Leap
-      Sword Dance / Dragon Glide / Arcane Shackle
-      Sky Cleave / Myriad Unity
-  * NPC 巫师 / 发射器 / 指令（/cast）都能用
-
-【资源来源声明】
-沿用自 wind_spellbooks（风刃、飞刃袭、航天腾跃）：
-  assets/legacyspell/textures/spells/{wind_blade,iron_slash,aeropic}.png
-  assets/legacyspell/textures/items/wind_blade.png
-  assets/legacyspell/textures/entity/iron_slash/{slash,slash_ice}.png
-  assets/legacyspell/sounds/wind_blade/wind_burst{1,2,3}.ogg
-
-沿用自 ISS: Magic From The East（剑舞、御龙滑翔）：
-  assets/legacyspell/textures/spells/{sword_dance,dragon_glide}.png
-  assets/legacyspell/textures/entity/jade_sword.png   （原作 jade_projectile.png）
-  assets/legacyspell/textures/entity/jade_loong.png
-
-沿用自 Iron's Spells 'n Spellbooks（奥术镣铐）：
-  assets/legacyspell/textures/spells/arcane_shackle.png
-  assets/legacyspell/textures/entity/arcane_shackle.png （原作 ender_chain.png）
-
-请遵守上述三个原作者的授权条款。
-
-【已知说明】
-  * 本模组不带材质包，贴图直接打进 jar 里，装上就有效果。
-  * 【裂空斩 / 万象归一 暂时没有法术图标】—— 按需求先留空。
-    补图标只需放两个 16×16 的 png：
-      assets/legacyspell/textures/spells/sky_cleave.png
-      assets/legacyspell/textures/spells/efface.png   （法术 id 已改为 efface）
-  * 八个法术的施法音效目前统一复用模组自带的 wind_burst 三个 ogg。
-  * 剑舞 / 御龙滑翔 的实体现在是真的模型：把原作的 Bedrock geo.json 逐个 bone/cube
-    移植成 1.12.2 原版 ModelRenderer/ModelBox，游龙还复刻了 glide 待机动画。
-    奥术镣铐的锁链仍是"单个实体 + 平铺链条四边形"的等效实现
-    （原作依赖 PartEntity 分节绳索，本环境没有）。
-  * 风刃穿透方块是对原作的额外增强（原作撞方块即消散），属于本附属模组的自定义改动。
-  * 御龙滑翔穿透方块【不是】额外增强，而是原作行为（noPhysics + 空的 onHitBlock）。
-  * 万象归一第三段的 removeEntity 属于"强制抹除"：目标不会触发死亡事件、不会掉落。
-  * 剑舞的玉剑撞到新方块会立即消失，这也是原作行为；在狭窄地形里召出一圈剑
-    可能会有几把在起飞瞬间就撞墙碎掉。
-
-【本轮验证情况（如实说明）】
-按你"打完包后尽可能减少验证"的要求，这一轮只做了编译与打包：
-  * `gradlew build` 编译零错误、打包成功（BUILD SUCCESSFUL in 27s）
-  * 复查真实注释：src 内 `//`、`/* */`、`/**` 三种注释标记的命中数均为 0
-  * version_patch = 2，版本号仍为 1.0.2
-  * jar 已复制进 dist/，MD5 = 36d5aa062d46feeb8295241fbf8a8065
-  * 反编译核对 jar 里的 EntityJadeLoong.class：颜色常量确已按 #128575 编进去
-    —— 字节码里是 `ldc int 1213813`（= 0x128575 = RGB 18,133,117）紧跟
-    `invokevirtual ParticleBuilder.clr:(I)`，尾迹与命中共 6 处上色全部走十六进制重载
-【这一轮只改了御龙游龙的粒子颜色与尾迹粒子类型：把上一版的浅蓝
-setRBGColorF(0.2, 0.6, 1.0) 换成你指定的深青色 0x128575，尾迹从 Type.SPARK
-（默认 3 tick 寿命、光带太短）换成 Type.SPARKLE + time(16)（柔边圆形发光、留痕更长），
-命中火花的撒开方式也从"原地不动"改成 move=true 向外炸开（更贴 ISS 的 SCRAPE）。
-没有动其它法术逻辑。】
-【没有】跑游戏内实机行为实测（粒子颜色/密度、命中特效触发都还没进游戏肉眼核对过）。
-要补的话说一声。
-
-（这轮改动是在"改用巫师模组 ParticleBuilder 染色粒子"的基础上按你指定的深青色
-0x128575 重新上色：先去翻了 Wizardry-1.12.2 源码，确认 vanilla 粒子在 1.12.2
-要么无颜色参数、要么颜色与速度绑死，无法单独染色；随后找到巫师自带的
-ParticleBuilder 现成写法，它支持 .clr(int hex) 精确染色，于是把整条特效
-统一染成 #128575，粒子类型同时取自闪电学派。）
-
+【验证状态】
+  已在 1.12.2 独立服务端 + Wizardry 4.3.6 实测：
+  注册项、法术属性、实体物理、伤害类型、粒子常量、锚定事件拦截等
+  全部断言通过（ALL CHECKS PASSED，0 失败），
+  且两次 clean build 产出的 jar 的 MD5 完全一致（可复现构建）。
 ================================================================

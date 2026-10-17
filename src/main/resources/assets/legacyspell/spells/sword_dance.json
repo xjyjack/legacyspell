@@ -13,7 +13,7 @@
     "tier": "advanced",
     "element": "sorcery",
     "type": "attack",
-    "cost": 80,
+    "cost": 95,
     "chargeup": 15,
     "cooldown": 100,
     "base_properties": {

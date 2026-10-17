@@ -3,10 +3,14 @@ package legacyspell.registry;
 import electroblob.wizardry.spell.Spell;
 import legacyspell.Reference;
 import legacyspell.spell.SpellAeropic;
-import legacyspell.spell.SpellArcaneShackle;
+import legacyspell.spell.SpellAerwhaleSong;
+import legacyspell.spell.SpellEnderShackle;
+import legacyspell.spell.SpellDisplacementCage;
 import legacyspell.spell.SpellDragonGlide;
 import legacyspell.spell.SpellEfface;
+import legacyspell.spell.SpellGaiaTreasury;
 import legacyspell.spell.SpellIronSlash;
+import legacyspell.spell.SpellObsidianRod;
 import legacyspell.spell.SpellRebirth;
 import legacyspell.spell.SpellSkyCleave;
 import legacyspell.spell.SpellSwordDance;
@@ -34,6 +38,11 @@ public final class LegacySpells {
     public static final Spell dragon_glide = placeholder();
     public static final Spell ender_shackle = placeholder();
 
+    public static final Spell aerwhale_song = placeholder();
+    public static final Spell displacement_cage = placeholder();
+    public static final Spell gaia_treasury = placeholder();
+    public static final Spell obsidian_rod = placeholder();
+
     private LegacySpells() {
         throw new UnsupportedOperationException("No instances.");
     }
@@ -56,6 +65,11 @@ public final class LegacySpells {
         registry.register(new SpellRebirth());
         registry.register(new SpellSwordDance());
         registry.register(new SpellDragonGlide());
-        registry.register(new SpellArcaneShackle());
+        registry.register(new SpellEnderShackle());
+
+        registry.register(new SpellAerwhaleSong());
+        registry.register(new SpellDisplacementCage());
+        registry.register(new SpellGaiaTreasury());
+        registry.register(new SpellObsidianRod());
     }
 }

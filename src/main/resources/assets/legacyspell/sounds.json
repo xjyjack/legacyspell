@@ -70,5 +70,29 @@
             "legacyspell:wind_blade/wind_burst2",
             "legacyspell:wind_blade/wind_burst3"
         ]
+    },
+    "spell.aerwhale_song": {
+        "category": "spells",
+        "sounds": [
+            "entity/ghast/scream"
+        ]
+    },
+    "spell.displacement_cage": {
+        "category": "spells",
+        "sounds": [
+            "legacyspell:displacement_cage_cast"
+        ]
+    },
+    "spell.obsidian_rod": {
+        "category": "spells",
+        "sounds": [
+            "entity/zombie_villager/cure"
+        ]
+    },
+    "spell.gaia_treasury": {
+        "category": "spells",
+        "sounds": [
+            "legacyspell:echoing_strike"
+        ]
     }
 }
